@@ -1,7 +1,8 @@
 import requests
 from bs4 import BeautifulSoup
 from datetime import datetime
-
+import smtplib
+from email.mime.text import MIMEText
 
 def get_weather():
     """Fetches real-time weather info for Los Angeles via wttr.in."""
@@ -25,11 +26,13 @@ def get_weather():
                 weather_text = BeautifulSoup(line, "html.parser").get_text().strip()
                 break
 
-        print("☀️ Today's Weather Summary (Los Angeles)")
-        print(f"- {weather_text}")
-        print("-" * 40)
+        # Format the weather block as a string
+        weather_report = "☀️ Today's Weather Summary (Los Angeles)\n"
+        weather_report += f"- {weather_text}\n"
+        weather_report += "-" * 40 + "\n"
+        return weather_report
     except Exception as e:
-        print(f"❌ Error fetching weather data: {e}")
+        return f"❌ Error fetching weather data: {e}\n"
 
 
 def get_news_headlines():
@@ -50,7 +53,7 @@ def get_news_headlines():
                 a for a in soup.select("article a") if len(a.get_text(strip=True)) > 15
             ]
 
-        print("📰 Today's Google Entertainment Headlines")
+        news_report = "📰 Today's Google Entertainment Headlines\n"
 
         # 👈 Use a set or list check to filter out duplicate titles
         unique_titles = []
@@ -84,15 +87,51 @@ def get_news_headlines():
                 break
 
         for idx, title in enumerate(unique_titles, 1):
-            print(f"{idx}. {title}")
+            news_report += f"{idx}. {title}\n"
 
-        print("-" * 40)
+        news_report += "-" * 40 + "\n"
+        return news_report
     except Exception as e:
-        print(f"❌ Error fetching news headlines: {e}")
+        return f"❌ Error fetching news headlines: {e}\n"
+
+
+def send_email_notification(content):
+    """Sends the compiled briefing content directly to your Gmail inbox."""
+    # ⚠️ CRITICAL: Replace these placeholders with your actual email and 16-digit app password
+    sender_email = "your_email@gmail.com"
+    app_password = "xxxxxxxxxxxxxxxx"  # Put your 16-digit key here without spaces
+    receiver_email = "your_email@gmail.com"
+    
+    # Setup secure SSL connection with Gmail's SMTP server
+    smtp_server = "smtp.gmail.com"
+    smtp_port = 465
+    
+    # Construct the email packet
+    today_str = datetime.now().strftime('%Y-%m-%d %H:%M')
+    msg = MIMEText(content, "plain", "utf-8")
+    msg["Subject"] = f"☕ Daily Briefing Report ({today_str})"
+    msg["From"] = sender_email
+    msg["To"] = receiver_email
+    
+    try:
+        # Establish a secure connection and login
+        with smtplib.SMTP_SSL(smtp_server, smtp_port) as server:
+            server.login(sender_email, app_password)
+            server.sendmail(sender_email, receiver_email, msg.as_string())
+        print("🚀 Briefing email has been successfully delivered to your inbox!")
+    except Exception as e:
+        print(f"❌ Failed to send email: {e}")
 
 
 if __name__ == "__main__":
     print(f"=== ⏰ {datetime.now().strftime('%Y-%m-%d %H:%M')} Briefing Started ===")
     print("-" * 40)
-    get_weather()
-    get_news_headlines()
+
+    # 1. Compile all fetched data into a single content block
+    briefing_content = f"=== ⏰ Morning Briefing ===\n\n"
+    briefing_content += get_weather()
+    briefing_content += get_news_headlines()
+    
+    # 2. Print to terminal (for verification) and shoot the email
+    print(briefing_content)
+    send_email_notification(briefing_content)

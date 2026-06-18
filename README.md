@@ -6,11 +6,14 @@ A lightweight Python-based web crawler that fetches a real-time weather summary 
 - **Real-time Weather Summary:** Fetches current weather info for Los Angeles in a clean, plain-text format using `wttr.in`.
 - **Google News Headlines:** Scrapes the top 5 entertainment headlines using `BeautifulSoup`.
 - **Smart Topic Filtering:** Implements an advanced keyword-based de-duplication mechanism to filter out overlapping articles and ensure 5 unique news topics.
+- **Email Notifications:** Automatically delivers the beautifully formatted daily briefing directly to your Gmail inbox via Python's `smtplib`.
 
 ## 🛠️ Tech Stack & Requirements
 - **Language:** Python 3.x
-- **Libraries Used:** - `requests` (for handling HTTP requests)
+- **Libraries Used:** 
+  - `requests` (for handling HTTP requests)
   - `beautifulsoup4` (for parsing HTML content)
+  - `smtplib` & `email` (Built-in Python libraries for secure email transmission)
 
 ## 💻 How to Run
 1. Clone this repository to your local machine.
@@ -22,6 +25,4 @@ A lightweight Python-based web crawler that fetches a real-time weather summary 
    python web_crawler.py
 
 ## 💻 Future Roadmaps (Level-Up Features)
-[ ] Automation Scheduler: Automate the script to run daily at a specific time using the schedule library.
-
-[ ] Email Notifications: Deliver the formatted daily briefing straight to your inbox via Python's smtplib.
+[ ] **Automation Scheduler:** Automate the script to run daily at a specific time using the `schedule` library.
