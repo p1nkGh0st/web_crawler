@@ -1,0 +1,15 @@
+# Credentials and Local Configurations
+config.py
+
+# Generated Reports / Excel Output
+*.csv
+
+# Python System Cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Operating System Files
+.DS_Store
+Thumbs.db

@@ -24,4 +24,4 @@ A lightweight Python-based web crawler that fetches a real-time weather summary 
    pip install requests beautifulsoup4
 3. Run the web crawler script:
    ```bash
-   python web_crawler.py
+   python main.py
