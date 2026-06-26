@@ -5,8 +5,8 @@ Main entry point for the Automated Daily Briefing Service.
 import schedule
 import time
 from datetime import datetime
-import config  # 👈 Import custom configurations
-import utils   # 👈 Import custom utility functions
+import config  
+import utils   
 
 def run_daily_briefing():
     """The core coordination job that compiles data and triggers notifications."""
@@ -18,9 +18,9 @@ def run_daily_briefing():
     briefing_content += utils.get_weather()
     briefing_content += utils.get_news_headlines_and_save()
     
-    # 2. Print summary and send out the email packet
+    # 2. Print summary and send out the Discord notification
     print(briefing_content)
-    utils.send_email_notification(briefing_content)
+    utils.send_discord_notification(briefing_content)
     print("=== 😴 Job Finished. Returning to standby mode ===")
 
 

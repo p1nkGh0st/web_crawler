@@ -1,14 +1,14 @@
 # utils.py
 """
-Utility functions for scraping data, saving Excel reports, and sending emails.
+Utility functions for scraping data, saving Excel reports, and sending discord notifier.
 """
+
 import requests
 from bs4 import BeautifulSoup
 from datetime import datetime
-import smtplib
-from email.mime.text import MIMEText
 import csv
-import config  # 👈 Import our custom configurations
+import config
+
 
 def get_weather():
     """Fetches real-time weather info for Los Angeles via wttr.in."""
@@ -76,17 +76,17 @@ def get_news_headlines_and_save():
                 break
 
         # [1-Click Upgrade] Auto-save Google News to CSV
-        today_date = datetime.now().strftime('%Y%m%d_%H%M')
+        today_date = datetime.now().strftime("%Y%m%d_%H%M")
         filename = f"google_news_{today_date}.csv"
-        
+
         with open(filename, mode="w", encoding="utf-8-sig", newline="") as f:
             writer = csv.writer(f)
             writer.writerow(["No.", "Headline"])
-            
+
             for idx, title in enumerate(unique_titles, 1):
                 writer.writerow([idx, title])
                 news_report += f"{idx}. {title}\n"
-        
+
         print(f"💾 [SUCCESS] Excel report saved as: {filename}")
         news_report += "-" * 40 + "\n"
         return news_report
@@ -94,18 +94,7 @@ def get_news_headlines_and_save():
         return f"❌ Error fetching news headlines: {e}\n"
 
 
-def send_email_notification(content):
-    """Sends the compiled briefing content directly to your Gmail inbox."""
-    today_str = datetime.now().strftime('%Y-%m-%d %H:%M')
-    msg = MIMEText(content, "plain", "utf-8")
-    msg["Subject"] = f"☕ Daily Briefing Report ({today_str})"
-    msg["From"] = config.SENDER_EMAIL
-    msg["To"] = config.RECEIVER_EMAIL
-    
-    try:
-        with smtplib.SMTP_SSL(config.SMTP_SERVER, config.SMTP_PORT) as server:
-            server.login(config.SENDER_EMAIL, config.APP_PASSWORD)
-            server.sendmail(config.SENDER_EMAIL, config.RECEIVER_EMAIL, msg.as_string())
-        print("🚀 Briefing email has been successfully delivered to your inbox!")
-    except Exception as e:
-        print(f"❌ Failed to send email: {e}")
+def send_discord_notification(message):
+    data = {"content": message}
+    response = requests.post(config.DISCORD_WEBHOOK_URL, json=data)
+    return response.status_code == 204
