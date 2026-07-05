@@ -1,5 +1,5 @@
 # Credentials and Local Configurations
-config.py
+config.example.py
 
 # Generated Reports / Excel Output
 *.csv
